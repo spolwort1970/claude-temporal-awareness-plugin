@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Claude Temporal Awareness",
+  "version": "1.0.0",
+  "description": "Prepends a timestamp to every message sent on claude.ai so Claude knows when you're talking.",
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
