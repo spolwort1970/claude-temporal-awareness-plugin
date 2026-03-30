@@ -133,6 +133,16 @@ All components use the same display format:
 
 The MCP server additionally returns structured fields (timestamp, abbreviation, timezone, iso8601) for programmatic use.
 
+## Platform Support
+
+All components work cross-platform (Windows, macOS, Linux):
+
+- **Chrome extension** — runs anywhere Chrome does
+- **Claude Code hook** — bash script, works natively on macOS/Linux and via Git Bash or WSL on Windows
+- **MCP servers** — Node.js and Python are cross-platform; the `tzdata` Python dependency is only required on Windows but is harmless to install elsewhere
+
+Path examples in this README use Windows-style paths (`C:/tools/...`) — substitute your own paths on other platforms.
+
 ## Why?
 
 Claude doesn't inherently know what time it is. This matters for:
