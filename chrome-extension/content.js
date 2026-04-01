@@ -122,8 +122,8 @@
   document.addEventListener(
     "click",
     (e) => {
-      const btn = e.target.closest('button[aria-label="Send Message"]') ||
-                  e.target.closest('button[data-testid="send-button"]');
+      const btn = e.target.closest('button[aria-label="Send message"]') ||
+                  e.target.closest('button[aria-label="Send Message"]');
       if (btn) {
         injectTimestamp(getEditor());
       }
