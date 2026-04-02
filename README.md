@@ -85,27 +85,20 @@ pip install -r requirements.txt
 
 **Recommended:** Copy the server to a central tools directory so your config doesn't depend on the repo location:
 
-```bash
-# Create the directory structure
-mkdir -p /c/tools/mcp-servers/shared/temporal-awareness
-
-# Copy the server(s) you want to use
-cp -r mcp-server/node /c/tools/mcp-servers/shared/temporal-awareness/node
-cp -r mcp-server/python /c/tools/mcp-servers/shared/temporal-awareness/python
+```cmd
+xcopy /E /I mcp-server\fallback C:\tools\mcp-servers\shared\temporal-awareness\fallback
+xcopy /E /I mcp-server\node C:\tools\mcp-servers\shared\temporal-awareness\node
+xcopy /E /I mcp-server\python C:\tools\mcp-servers\shared\temporal-awareness\python
 ```
 
-Then add an entry to your `~/.mcp.json` file (create it if it doesn't exist). You can register one or both versions:
+Then add a single entry to your `~/.mcp.json` file (create it if it doesn't exist) pointing at the fallback wrapper:
 
 ```json
 {
   "mcpServers": {
     "temporal-awareness": {
-      "command": "python",
-      "args": ["C:/tools/mcp-servers/shared/temporal-awareness/python/server.py"]
-    },
-    "temporal-awareness-node": {
       "command": "node",
-      "args": ["C:/tools/mcp-servers/shared/temporal-awareness/node/index.js"]
+      "args": ["C:/tools/mcp-servers/shared/temporal-awareness/fallback/index.js"]
     }
   }
 }
@@ -113,7 +106,28 @@ Then add an entry to your `~/.mcp.json` file (create it if it doesn't exist). Yo
 
 Alternatively, you can point directly at the repo paths if you prefer.
 
-Restart Claude Code after updating `.mcp.json`. Use the `/mcp` command within Claude Code to verify the server is connected and to enable/disable servers as needed.
+Restart Claude Code after updating `.mcp.json`. Use the `/mcp` command within Claude Code to verify the server is connected.
+
+#### Fallback wrapper (`mcp-server/fallback/`)
+
+The fallback wrapper is a thin Node.js script that selects the Python or Node runtime automatically — no manual switching required.
+
+On startup it runs a pre-flight check (`python -c "import mcp"`). If Python and its dependencies are available, the Python server is used. If not, the Node server kicks in transparently. Claude sees a single `temporal-awareness` tool regardless of which runtime is active.
+
+Stdin is buffered during the pre-flight so no MCP initialization messages are lost. The active runtime is logged to stderr on each startup:
+
+```
+[temporal-awareness] Using Python server
+```
+
+or, if Python is unavailable:
+
+```
+[temporal-awareness] Python/mcp unavailable, falling back to Node
+[temporal-awareness] Using Node server
+```
+
+The fallback wrapper requires no additional dependencies — it uses only Node built-ins.
 
 > **Tip:** The MCP server and Claude Code hook complement each other — the hook provides passive timestamp injection on every message, while the MCP server lets Claude actively check the time mid-task. You can run both simultaneously.
 
