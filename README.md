@@ -91,22 +91,17 @@ xcopy /E /I mcp-server\node C:\tools\mcp-servers\shared\temporal-awareness\node
 xcopy /E /I mcp-server\python C:\tools\mcp-servers\shared\temporal-awareness\python
 ```
 
-Then add a single entry to your `~/.mcp.json` file (create it if it doesn't exist) pointing at the fallback wrapper:
+Then register the server at **user scope** so it's available from every project:
 
-```json
-{
-  "mcpServers": {
-    "temporal-awareness": {
-      "command": "node",
-      "args": ["C:/tools/mcp-servers/shared/temporal-awareness/fallback/index.js"]
-    }
-  }
-}
+```bash
+claude mcp add -s user temporal-awareness node C:/tools/mcp-servers/shared/temporal-awareness/fallback/index.js
 ```
 
-Alternatively, you can point directly at the repo paths if you prefer.
+This writes the entry to `~/.claude.json` and makes it available no matter which directory you launch Claude Code from. Alternatively, you can point directly at the repo paths if you prefer.
 
-Restart Claude Code after updating `.mcp.json`. Use the `/mcp` command within Claude Code to verify the server is connected.
+> **Note:** A `.mcp.json` file is *project-scoped* — Claude Code only reads it from the current project root, not from your home directory. Use `claude mcp add -s user` (or `-s project` for a committed project-level config) rather than dropping an `.mcp.json` in `~/`.
+
+Restart Claude Code after registering. Use `claude mcp list` or the `/mcp` command within Claude Code to verify the server is connected.
 
 #### Fallback wrapper (`mcp-server/fallback/`)
 
